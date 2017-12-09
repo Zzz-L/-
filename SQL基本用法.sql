@@ -58,21 +58,50 @@ select courses.cname,avg(degree) from students join scores
 on students.sno=scores.sno join courses
 on courses.cno=scores.cno where class='95033' --where语句要写在group by 前面
 group by courses.cno,courses.cname;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+--查询所有同学的Sno、Cno和rank列
++-----+-------+--------+      
+| sno | cno   | degree |           
++-----+-------+--------+           
+| 103 | 3-245 |   86.0 |                
+| 105 | 3-245 |   75.0 |
+| 109 | 3-245 |   68.0 |                                  
+| 103 | 3-105 |   92.0 |                  
+| 105 | 3-105 |   88.0 |
+| 109 | 3-105 |   76.0 |
+| 101 | 3-105 |   64.0 |
+| 107 | 3-105 |   91.0 |
+| 108 | 3-105 |   78.0 |
+| 101 | 6-166 |   85.0 |
+| 107 | 6-106 |   79.0 |
+| 108 | 6-166 |   81.0 |
++-----+-------+--------+
++------+------+------+
+| low  | upp  | rank |
++------+------+------+
+|   90 |  100 | A    |
+|   80 |   89 | B    |
+|   70 |   79 | C    |
+|   60 |   69 | D    |
+|    0 |   59 | E    |
++------+------+------+
+--即使两张表没有确定列联结,但也可以根据相关关系进行联结
+SELECT Sno,Cno,rank FROM Scores INNER JOIN grade ON (Scores.Degree>=grade.low AND Scores.Degree<=grade.upp) ORDER BY Sno;    
+--查询成绩高于学号为“109”、课程号为“3-105”的成绩的所有记录
+SELECT s1.Sno,s1.Degree
+FROM Scores AS s1 INNER JOIN Scores AS s2
+ON(s1.Cno=s2.Cno AND s1.Degree>s2.Degree)
+WHERE s1.Cno='3-105' AND s2.Sno='109'
+ORDER BY s1.Sno;--等价于
+select * from scores where cno='3-105'
+and degree>(select degree from scores
+where sno='109' and cno='3-105');
+--查询和学号为108的同学同年出生的所有学生的Sno、Sname和Sbirthday列
+select sno,sname,sbirthday from students
+where year(sbirthday)=(select year(sbirthday) --year()提取出时间格式中的年份
+from students where sno='108'); --等价于  
+SELECT s1.Sno,s1.Sname,s1.Sbirthday 
+FROM Students AS s1 INNER JOIN Students AS s2
+ON(YEAR(s1.Sbirthday)=YEAR(s2.Sbirthday))
+WHERE s2.Sno='108';
 
 
