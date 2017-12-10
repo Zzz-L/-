@@ -103,5 +103,33 @@ SELECT s1.Sno,s1.Sname,s1.Sbirthday
 FROM Students AS s1 INNER JOIN Students AS s2
 ON(YEAR(s1.Sbirthday)=YEAR(s2.Sbirthday))
 WHERE s2.Sno='108';
-
-
+--查询选修某课程的同学人数多于5人的教师姓名
+select distinct tname from teachers join courses
+ on courses.tno=teachers.tno join scores
+on scores.cno=courses.cno where courses.cno = --需指明此处cno属于哪张表
+(select cno from scores group by
+cno having count(*) >5);
+--查询出“计算机系“教师所教课程的成绩表
+select tname,cname,sname,degree from scores join courses --即使不是来自该表的变量也可写出
+on courses.cno=scores.cno join teachers --只要联结其他表,所有变量都可输出
+on teachers.tno=courses.tno join students
+on scores.sno=students.sno where
+teachers.depart='计算机系' order by tname,cname,degree desc;
+--查询选修编号为“3-105“课程且成绩至少高于任意选修编号为“3-245”的同学的成绩的Cno、Sno和Degree,并按Degree从高到低次序排序
+select sno,cno,degree from scores
+where cno='3-105' and degree >= 
+(select min(degree) from scores
+where cno='3-245') order by degree desc; --等价于
+SELECT Cno,Sno,Degree
+FROM Scores
+WHERE Cno='3-105' AND Degree > ANY(  --any表示任意选修
+    SELECT Degree
+    FROM Scores
+    WHERE Cno='3-245')
+ORDER BY Degree DESC;
+--查询所有教师和同学的name、sex和birthday
+SELECT Sname,Ssex,Sbirthday
+FROM Students
+UNION  --UNION 操作符用于合并两个或多个 SELECT 语句的结果集
+SELECT Tname,Tsex,Tbirthday
+FROM Teachers;
