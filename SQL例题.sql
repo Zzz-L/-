@@ -106,4 +106,11 @@ FROM Students;
 select s1.sname from students as s1  --联结同一张表
 join students as s2 on (s1.ssex=s2.ssex
 and s1.class=s2.class) where s2.sname='李军';
+--18.从titles表获取按照title进行分组，每组个数大于等于2，给出title以及对应的数目t,注意对于重复的emp_no进行忽略。
+select title,count(distinct emp_no) as t from titles group by title having t>=2;  --count函数里面可添加其他参数
+--19.查找employees表所有emp_no为奇数，且last_name不为Mary的员工信息，并按照hire_date逆序排列
+select * from employees where last_name!='Mary' and emp_no % 2=1 order by hire_date desc; --奇数表明取余为1
+
+
+
 
