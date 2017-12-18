@@ -110,7 +110,14 @@ and s1.class=s2.class) where s2.sname='李军';
 select title,count(distinct emp_no) as t from titles group by title having t>=2;  --count函数里面可添加其他参数
 --19.查找employees表所有emp_no为奇数，且last_name不为Mary的员工信息，并按照hire_date逆序排列
 select * from employees where last_name!='Mary' and emp_no % 2=1 order by hire_date desc; --奇数表明取余为1
-
+--20.查找所有员工自入职以来的薪水涨幅情况，给出员工编号emp_noy以及其对应的薪水涨幅growth，并按照growth进行升序
+--本题思路是先分别用两次LEFT JOIN左连接employees与salaries，建立两张表，分别存放员工当前工资（sCurrent）与员工
+--入职时的工资（sStart），再用INNER JOIN连接sCurrent与sStart，最后限定在同一员工下用当前工资减去入职工资
+SELECT sCurrent.emp_no, (sCurrent.salary-sStart.salary) AS growth  --直接用where语句联结两张表更简洁
+FROM (SELECT s.emp_no, s.salary FROM employees e, salaries s WHERE e.emp_no = s.emp_no AND s.to_date = '9999-01-01') AS sCurrent,
+(SELECT s.emp_no, s.salary FROM employees e, salaries s WHERE e.emp_no = s.emp_no AND s.from_date = e.hire_date) AS sStart
+WHERE sCurrent.emp_no = sStart.emp_no
+ORDER BY growth
 
 
 
