@@ -19,6 +19,7 @@ select avg(downloads) from fake_apps; --AVG 函数返回数值列的平均值。
 select price,round(avg(downloads),2) from fake_apps group by price; --round 保留指定小数位数
 --------------------------------操作-----------------------------
 INSERT INTO celebs (id, name, age) VALUES (5, 'zl', 23); --插入一行
+insert or ignore into actor values (3,'ED','CHASE','2006-02-15 12:34:33'); --对于表actor批量插入如下数据,如果数据已经存在，请忽略
 update celebs set age=22 where id=1;--修改表中的数据
 alter table celebs add column twitter_handle text;--添加一列
 delete from celebs where twitter_handle is NULL; --删除行
@@ -46,5 +47,6 @@ select * from Customer LIMIT 1,10;--检索从第2行开始，累加10条id记录
 select * from Customer limit 5,10;--检索从第6行开始向前加10条数据，共显示id为6,7....15
 select * from Customer limit 6,10;--检索从第7行开始向前加10条记录，显示id为7,8...16
 --可以接受两个参数，第一个返回记录行的偏移量，第二个参数指定返回记录行的最大数目
-
-
+--------------------------------高级教程-----------------------------	
+explain select * from employees; --获取select * from employees对应的执行计划
+select (last_name ||" " || first_name) as Name from employees;  --将employees表的所有员工的last_name和first_name拼接起来作为Name，中间以一个空格区分
