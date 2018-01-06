@@ -5,6 +5,7 @@ select name,imdb_rating from movies;--查询多列数据
 select distinct genre from movies; --用于返回唯一不同的值。
 select * from movies where name like 'Se_en'; --LIKE 操作符用于在 WHERE 子句中搜索列中的指定模式。此处寻找以Se开头 en结尾的name
 select * from movies where name like '%man%';--查找name中包含man
+select * from movies where name like '_明%';--查找name中第二个字为明的电影( _替代一个字符，%替代一个或多个字符)
 select * from movies where year between 1990 and 2000;
 select * from movies where year between 1990 and 2000 and genre='comedy';
 select * from movies where genre='comedy' or year<1980;
@@ -20,8 +21,11 @@ select price,round(avg(downloads),2) from fake_apps group by price; --round 保�
 --------------------------------操作-----------------------------
 INSERT INTO celebs (id, name, age) VALUES (5, 'zl', 23); --插入一行
 insert or ignore into actor values (3,'ED','CHASE','2006-02-15 12:34:33'); --对于表actor批量插入如下数据,如果数据已经存在，请忽略
-update celebs set age=22 where id=1;--修改表中的数据
-alter table celebs add column twitter_handle text;--添加一列
+update celebs set age=22 where id=1;--修改表中的数据 
+update student set ssex='女',sage=sage+1 where sname='赵茵';--修改多个变量值
+alter table celebs add column twitter_handle text;--添加一列 (用于修改列属性，添加一列，删除一列)
+alter table celebs drop column twitter_handle --删除一列
+alter table celebs alter column twitter_handle int --修改列的数据类型
 delete from celebs where twitter_handle is NULL; --删除行
 create table celeb (id integer primary key,name text unique,date_of_birth text not null,date_of_death text default 'Not Applicable');
 --创建表,unique设置该列所有值都不重复,not null设置该列非空,default为该列添加默认值
