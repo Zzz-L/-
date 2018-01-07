@@ -118,6 +118,14 @@ FROM (SELECT s.emp_no, s.salary FROM employees e, salaries s WHERE e.emp_no = s.
 (SELECT s.emp_no, s.salary FROM employees e, salaries s WHERE e.emp_no = s.emp_no AND s.from_date = e.hire_date) AS sStart
 WHERE sCurrent.emp_no = sStart.emp_no
 ORDER BY growth
-
-
+--21.查询学过“001”并且也学过编号“002”课程的同学的学号、姓名；
+--解法一：求交集
+select s2.sno,s1.sname from student s1,sc s2
+where s1.sno=s2.sno and s2.cno='001'
+intersect   --获取两张表返回结果的交集
+select s2.sno,s1.sname from student s1,sc s2
+where s1.sno=s2.sno and s2.cno='002';
+--解法二：利用exists (exist用法类似于in,但In引导的子句只能返回一个字段)
+select Student.S#,Student.Sname from Student,SC where Student.S#=SC.S# and SC.C#='001'
+and exists( Select * from SC as SC_2 where SC_2.S#=SC.S# and SC_2.C#='002'); 
 
