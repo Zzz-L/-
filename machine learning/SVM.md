@@ -69,25 +69,26 @@ ps: 随机梯度下降与普通梯度下降的区别在于前者更新参数时�
 2. 三种算法：ID3算法、C4.5算法、cart算法
 - ID3算法：1) 首先计算每个特征的信息增益，选择信息增益最大的特征划分数据集  
              - 信息增益表示给定特征后，对类的信息的不确定性减少的程度（比如区分化妆与否，性别与学历两个特征的信息增益不同）   
-             - 信息增益的计算g(D,A) = H(D) - H(D|A) （划分前熵-划分后熵）
-             - H(D)表示原始数据集D的熵   <a href="http://www.codecogs.com/eqnedit.php?latex=H(D)&space;=&space;-\sum_{i=1}^{n}P_i&space;log(P_i)" target="_blank"><img src="http://latex.codecogs.com/gif.latex?H(D)&space;=&space;-\sum_{i=1}^{n}P_i&space;log(P_i)" title="H(D) = -\sum_{i=1}^{n}P_i log(P_i)" /></a>
+             - 信息增益的计算g(D,A) = H(D) - H(D|A) （划分前熵-划分后熵）   
+             - H(D)表示原始数据集D的熵     
+             <a href="http://www.codecogs.com/eqnedit.php?latex=H(D)&space;=&space;-\sum_{i=1}^{n}P_i&space;log(P_i)" target="_blank"><img src="http://latex.codecogs.com/gif.latex?H(D)&space;=&space;-\sum_{i=1}^{n}P_i&space;log(P_i)" title="H(D) = -\sum_{i=1}^{n}P_i log(P_i)" /></a>    
              - H(D|A)表示给定特征A后的条件熵    
-             <a href="http://www.codecogs.com/eqnedit.php?latex=H(D|A)&space;=&space;-\sum_{i=1}^{n}P_i&space;H(D|A=a_i)&space;\\&space;P_i&space;=&space;P(A=a_i)" target="_blank"><img src="http://latex.codecogs.com/gif.latex?H(D|A)&space;=&space;-\sum_{i=1}^{n}P_i&space;H(D|A=a_i)&space;\\&space;P_i&space;=&space;P(A=a_i)" title="H(D|A) = -\sum_{i=1}^{n}P_i H(D|A=a_i) \\ P_i = P(A=a_i)" /></a>
-          2) 划分后的数据集若类别不同，则需在剩下的特征中寻找最大的特征继续划分数据集
-          3）直到所有特征用完或者每个分支下的样本属于同一类，则停止划分，若所有特征用完，
-             但样本类别不统一，则采用投票的方法决定所属类别   
-  总结：ID3算法只使用于离散变量，同时只能用于分类，不能用于回归
+             <a href="http://www.codecogs.com/eqnedit.php?latex=H(D|A)&space;=&space;-\sum_{i=1}^{n}P_i&space;H(D|A=a_i)&space;\\&space;P_i&space;=&space;P(A=a_i)" target="_blank"><img src="http://latex.codecogs.com/gif.latex?H(D|A)&space;=&space;-\sum_{i=1}^{n}P_i&space;H(D|A=a_i)&space;\\&space;P_i&space;=&space;P(A=a_i)" title="H(D|A) = -\sum_{i=1}^{n}P_i H(D|A=a_i) \\ P_i = P(A=a_i)" /></a>    
+          2) 划分后的数据集若类别不同，则需在剩下的特征中寻找最大的特征继续划分数据集  
+          3）直到所有特征用完或者每个分支下的样本属于同一类，则停止划分，若所有特征用完，  
+             但样本类别不统一，则采用投票的方法决定所属类别     
+  总结：ID3算法只使用于离散变量，同时只能用于分类，不能用于回归   
  - C4.5算法：与ID3算法的区别在于使用信息增益比选择特征，同时适用于连续变量
              1）使用信息增益比，信息增益/划分前熵，因为信息增益偏向选择取值较多的特征
              2）处理连续特征，对连续特征取值排序，任意两个值选取中间值划分数据集，尝试每种划分方法，
                 然后计算划分前后的信息熵，选择信息增益最大的分裂点作为该特征的分裂点
-- cart算法：通过构建二叉分类树或回归树，用于分类时，使用基尼系数选择特征，而用于回归时，则使用平方误差最小选择特征以及分割点
-1）回归二叉树
-- y为连续值，将输入x划分为m个区域，每个区域的取值为C1,C2,,,CM，因此最小二乘回归树模型为   
+- cart算法：通过构建二叉分类树或回归树，用于分类时，使用基尼系数选择特征，而用于回归时，则使用平方误差最小选择特征以及分割点   
+1）回归二叉树   
+- y为连续值，将输入x划分为m个区域，每个区域的取值为C1,C2,,,CM，因此最小二乘回归树模型为    
 <a href="http://www.codecogs.com/eqnedit.php?latex=f(x)&space;=&space;\sum_{m=1}^{M}C_m&space;I(x\in&space;R_m)" target="_blank"><img src="http://latex.codecogs.com/gif.latex?f(x)&space;=&space;\sum_{m=1}^{M}C_m&space;I(x\in&space;R_m)" title="f(x) = \sum_{m=1}^{M}C_m I(x\in R_m)" /></a>
-- 利用平方误差最小化，寻找最优划分的特征以及分裂点，优化目标函数如下：
+- 利用平方误差最小化，寻找最优划分的特征以及分裂点，优化目标函数如下：   
 <a href="http://www.codecogs.com/eqnedit.php?latex=\underset{j,s}{min}[\underset{C_1}{min}\sum_{x_i\in&space;R_1(j,s)}(y_i-C_1)^{2}&plus;\underset{C_2}{min}\sum_{x_i\in&space;R_2(j,s)}(y_i-C_2)^{2}]" target="_blank"><img src="http://latex.codecogs.com/gif.latex?\underset{j,s}{min}[\underset{C_1}{min}\sum_{x_i\in&space;R_1(j,s)}(y_i-C_1)^{2}&plus;\underset{C_2}{min}\sum_{x_i\in&space;R_2(j,s)}(y_i-C_2)^{2}]" title="\underset{j,s}{min}[\underset{C_1}{min}\sum_{x_i\in R_1(j,s)}(y_i-C_1)^{2}+\underset{C_2}{min}\sum_{x_i\in R_2(j,s)}(y_i-C_2)^{2}]" /></a>
-- 依次遍历所有特征j，以及每个特征的每个取值s，选择使得损失函数最小的（j,s）
+- 依次遍历所有特征j，以及每个特征的每个取值s，选择使得损失函数最小的（j,s）   
 2) 分类二叉树
 - 使用基尼指数寻找划分特征以及最优划分点，基尼指数表示集合的不确定性，基尼指数越大，则数据的不纯度越高   
 <a href="http://www.codecogs.com/eqnedit.php?latex=Gini(p)&space;=&space;\sum_{k=1}^{K}P_k(1-P_k)&space;=1-&space;\sum_{k=1}^{K}P_k^{2}" target="_blank"><img src="http://latex.codecogs.com/gif.latex?Gini(p)&space;=&space;\sum_{k=1}^{K}P_k(1-P_k)&space;=1-&space;\sum_{k=1}^{K}P_k^{2}" title="Gini(p) = \sum_{k=1}^{K}P_k(1-P_k) =1- \sum_{k=1}^{K}P_k^{2}" /></a>
