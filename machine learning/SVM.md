@@ -4,14 +4,20 @@
 3. 逻辑回归得到P(Y=1|X) 和 P(Y=0|X)后，采用极大似然估计求解模型参数w、b
 4. 极大似然估计思想：在样本已知的情况下，求解模型参数，使得样本出现的概率最大
    其中用似然函数表示样本出现的概率，因此极大似然估计即为使得似然函数最大化的参数
-5. logistic回归的损失函数为对数损失
+5. logistic回归的损失函数为对数损失   
 <a href="http://www.codecogs.com/eqnedit.php?latex=\begin{aligned}&space;L(w)&=-\log\left&space;(&space;\prod_{i=1}^N&space;[{\color{Red}&space;\sigma(x_i)}]^{{\color{Blue}&space;y_i}}&space;[{\color{Red}&space;1-&space;\sigma(x_i)}]^{{\color{Blue}&space;1-y_i}}&space;\right&space;)\\&space;&=-\sum_{i=1}^N&space;\left&space;[&space;y_i\log\sigma(x_i)&plus;(1-y_i)\log(1-\sigma(x_i))&space;\right&space;]\\&space;&=-\sum_{i=1}^N&space;\left&space;[&space;y_i\log\frac{\sigma(x_i)}{1-\sigma(x_i)}&plus;\log(1-\sigma(x_i))&space;\right&space;]&space;\end{aligned}" target="_blank"><img src="http://latex.codecogs.com/gif.latex?\begin{aligned}&space;L(w)&=-\log\left&space;(&space;\prod_{i=1}^N&space;[{\color{Red}&space;\sigma(x_i)}]^{{\color{Blue}&space;y_i}}&space;[{\color{Red}&space;1-&space;\sigma(x_i)}]^{{\color{Blue}&space;1-y_i}}&space;\right&space;)\\&space;&=-\sum_{i=1}^N&space;\left&space;[&space;y_i\log\sigma(x_i)&plus;(1-y_i)\log(1-\sigma(x_i))&space;\right&space;]\\&space;&=-\sum_{i=1}^N&space;\left&space;[&space;y_i\log\frac{\sigma(x_i)}{1-\sigma(x_i)}&plus;\log(1-\sigma(x_i))&space;\right&space;]&space;\end{aligned}" title="\begin{aligned} L(w)&=-\log\left ( \prod_{i=1}^N [{\color{Red} \sigma(x_i)}]^{{\color{Blue} y_i}} [{\color{Red} 1- \sigma(x_i)}]^{{\color{Blue} 1-y_i}} \right )\\ &=-\sum_{i=1}^N \left [ y_i\log\sigma(x_i)+(1-y_i)\log(1-\sigma(x_i)) \right ]\\ &=-\sum_{i=1}^N \left [ y_i\log\frac{\sigma(x_i)}{1-\sigma(x_i)}+\log(1-\sigma(x_i)) \right ] \end{aligned}" /></a>
-5. 参数优化: 针对上述损失函数，利用梯度下降法求解模型参数
+5. 参数优化: 针对上述损失函数，利用梯度下降法求解模型参数，梯度下降分为以下几步：
+- 计算下降方向，即计算梯度
+- 选择步长，更新参数（沿梯度负方向）
+- 重复以上两步，直到两次迭代的差值小于某一阈值，则停止更新  
+ps: 随机梯度下降与普通梯度下降的区别在于前者更新参数时只使用一个样本，而后者却使用所有训练样本
 5. 多分类
-- 多项式逻辑回归模型（类似于softmax回归）
+- 多项式逻辑回归模型（类似于softmax回归）   
+
 <a href="http://www.codecogs.com/eqnedit.php?latex=\begin{aligned}&space;P(Y=k|x)&=\frac{\exp(w_kx)}{1&plus;\sum_{k=1}^{K-1}&space;\exp(w_kx)}&space;\quad&space;k=1,2,..,K-1&space;\\&space;P(Y=K|x)&=\frac{1}{1&plus;\sum_{k=1}^{K-1}\exp(w_kx)}&space;\end{aligned}" target="_blank"><img src="http://latex.codecogs.com/gif.latex?\begin{aligned}&space;P(Y=k|x)&=\frac{\exp(w_kx)}{1&plus;\sum_{k=1}^{K-1}&space;\exp(w_kx)}&space;\quad&space;k=1,2,..,K-1&space;\\&space;P(Y=K|x)&=\frac{1}{1&plus;\sum_{k=1}^{K-1}\exp(w_kx)}&space;\end{aligned}" title="\begin{aligned} P(Y=k|x)&=\frac{\exp(w_kx)}{1+\sum_{k=1}^{K-1} \exp(w_kx)} \quad k=1,2,..,K-1 \\ P(Y=K|x)&=\frac{1}{1+\sum_{k=1}^{K-1}\exp(w_kx)} \end{aligned}" /></a>
 - 多分类逻辑回归采用[softmax回归](https://tech.meituan.com/intro_to_logistic_regression.html)   
-- 也可采用构建多个分类器的方法，如one-vs-one、one-vs-all, 当类别之间互斥时，则需采用softmax回归
+- 也可采用构建多个分类器的方法，如one-vs-one、one-vs-all, 
+  当类别之间互斥时，则需采用softmax回归
    
    
    
@@ -47,3 +53,25 @@
     于是，标准问题最后等价于求解该**对偶问题**    
     > 继续求解该优化问题，有 [SMO 方法](https://blog.csdn.net/ajianyingxiaoqinghan/article/details/73087304#t11)；因为《统计学习方法》也只讨论到这里，故推导也止于此   
 
+## 朴素贝叶斯方法
+1. 基本思想：分类方法，根据条件独立性假设学习训练数据的联合概率分布，对于预测样本x，  
+   结合贝叶斯定理，计算后验概率P(Y|x), 选择后验概率最大的类作为输入x的所属类别
+2. 条件独立性假设是指在类别给定的情况，各分类特征条件独立
+3. 贝叶斯分类器：y=argmax(P(Y=k|X=x))
+4. 损失函数为0-1损失时，期望风险最小化等价于后验概率最大化
+5. 贝叶斯分类器待估计参数：先验概率p(Y=k)，条件概率p(X=x|Y=k)  
+   采用极大似然估计或者贝叶斯估计（后者是防止极大似然估计所估计的概率为0，因此添加常数项）
+6. 贝叶斯估计因为学习了训练样本的联合概率分布，因此属于生成式模型
+
+## 决策树
+1. 决策树是一种分类与回归方法，通过构建一颗二叉树或多叉树实现分类、回归，
+   包括特征选择、决策树生成、决策树剪枝
+2. 三种算法：ID3算法、C4.5算法、cart算法
+- ID3算法：1) 首先计算每个特征的信息增益，选择信息增益最大的特征划分数据集  
+          2) 划分后的数据集若类别不同，则需在剩下的特征中寻找最大的特征继续划分数据集
+          3）直到所有特征用完或者每个分支下的样本属于同一类，则停止划分，若所有特征用完，
+             但样本类别不统一，则采用投票的方法决定所属类别
+  总结：ID3算法只使用于离散变量，同时只能用于分类，不能用于回归
+ - C4.5算法：与ID3算法的区别在于使用信息增益比选择特征，同时适用于连续变量
+             1）使用信息增益比，因为特征取值越多，信息增益越大
+             2）处理连续特征
