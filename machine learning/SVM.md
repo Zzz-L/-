@@ -1,4 +1,23 @@
-# 支持向量机
+## 逻辑回归分类器
+1. 逻辑回归分类器是在线性回归的基础上构建，为了使得输入取值仅为0、1，因此采用了sigmoid函数映射
+2. 逻辑回归模型：ln y/(1-y) = w*x+b
+3. 逻辑回归得到P(Y=1|X) 和 P(Y=0|X)后，采用极大似然估计求解模型参数w、b
+4. 极大似然估计思想：在样本已知的情况下，求解模型参数，使得样本出现的概率最大
+   其中用似然函数表示样本出现的概率，因此极大似然估计即为使得似然函数最大化的参数
+5. logistic回归的损失函数为对数损失
+<a href="http://www.codecogs.com/eqnedit.php?latex=\begin{aligned}&space;L(w)&=-\log\left&space;(&space;\prod_{i=1}^N&space;[{\color{Red}&space;\sigma(x_i)}]^{{\color{Blue}&space;y_i}}&space;[{\color{Red}&space;1-&space;\sigma(x_i)}]^{{\color{Blue}&space;1-y_i}}&space;\right&space;)\\&space;&=-\sum_{i=1}^N&space;\left&space;[&space;y_i\log\sigma(x_i)&plus;(1-y_i)\log(1-\sigma(x_i))&space;\right&space;]\\&space;&=-\sum_{i=1}^N&space;\left&space;[&space;y_i\log\frac{\sigma(x_i)}{1-\sigma(x_i)}&plus;\log(1-\sigma(x_i))&space;\right&space;]&space;\end{aligned}" target="_blank"><img src="http://latex.codecogs.com/gif.latex?\begin{aligned}&space;L(w)&=-\log\left&space;(&space;\prod_{i=1}^N&space;[{\color{Red}&space;\sigma(x_i)}]^{{\color{Blue}&space;y_i}}&space;[{\color{Red}&space;1-&space;\sigma(x_i)}]^{{\color{Blue}&space;1-y_i}}&space;\right&space;)\\&space;&=-\sum_{i=1}^N&space;\left&space;[&space;y_i\log\sigma(x_i)&plus;(1-y_i)\log(1-\sigma(x_i))&space;\right&space;]\\&space;&=-\sum_{i=1}^N&space;\left&space;[&space;y_i\log\frac{\sigma(x_i)}{1-\sigma(x_i)}&plus;\log(1-\sigma(x_i))&space;\right&space;]&space;\end{aligned}" title="\begin{aligned} L(w)&=-\log\left ( \prod_{i=1}^N [{\color{Red} \sigma(x_i)}]^{{\color{Blue} y_i}} [{\color{Red} 1- \sigma(x_i)}]^{{\color{Blue} 1-y_i}} \right )\\ &=-\sum_{i=1}^N \left [ y_i\log\sigma(x_i)+(1-y_i)\log(1-\sigma(x_i)) \right ]\\ &=-\sum_{i=1}^N \left [ y_i\log\frac{\sigma(x_i)}{1-\sigma(x_i)}+\log(1-\sigma(x_i)) \right ] \end{aligned}" /></a>
+5. 参数优化: 针对上述损失函数，利用梯度下降法求解模型参数
+5. 多分类
+- 多项式逻辑回归模型（类似于softmax回归）
+<a href="http://www.codecogs.com/eqnedit.php?latex=\begin{aligned}&space;P(Y=k|x)&=\frac{\exp(w_kx)}{1&plus;\sum_{k=1}^{K-1}&space;\exp(w_kx)}&space;\quad&space;k=1,2,..,K-1&space;\\&space;P(Y=K|x)&=\frac{1}{1&plus;\sum_{k=1}^{K-1}\exp(w_kx)}&space;\end{aligned}" target="_blank"><img src="http://latex.codecogs.com/gif.latex?\begin{aligned}&space;P(Y=k|x)&=\frac{\exp(w_kx)}{1&plus;\sum_{k=1}^{K-1}&space;\exp(w_kx)}&space;\quad&space;k=1,2,..,K-1&space;\\&space;P(Y=K|x)&=\frac{1}{1&plus;\sum_{k=1}^{K-1}\exp(w_kx)}&space;\end{aligned}" title="\begin{aligned} P(Y=k|x)&=\frac{\exp(w_kx)}{1+\sum_{k=1}^{K-1} \exp(w_kx)} \quad k=1,2,..,K-1 \\ P(Y=K|x)&=\frac{1}{1+\sum_{k=1}^{K-1}\exp(w_kx)} \end{aligned}" /></a>
+- 多分类逻辑回归采用[softmax回归](https://tech.meituan.com/intro_to_logistic_regression.html)   
+- 也可采用构建多个分类器的方法，如one-vs-one、one-vs-all, 当类别之间互斥时，则需采用softmax回归
+   
+   
+   
+   
+
+## 支持向量机
 1. 基本思想：在特征空间中找到一个分割超平面，能够正确划分样本数据集，同时间隔最大化，间隔是指样本数据点到超平面的最短距离
 2. 函数间隔：样本数据点（x,y）关于超平面 w*x + b的函数间隔定义为 <a href="https://www.codecogs.com/eqnedit.php?latex=\hat{r}=w*x_i&plus;b" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\hat{r}=w*x_i&plus;b" title="\hat{r}=w*x_i+b" /></a>   
    几何间隔：对w作规范化  
