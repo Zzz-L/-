@@ -1,6 +1,14 @@
 ---
-- [逻辑回归分类器](## 逻辑回归分类器)
-- [逻辑斯蒂回归](##逻辑回归分类器)
+- [逻辑回归分类器](##逻辑回归分类器)
+- [支持向量机](##支持向量机)
+- [朴素贝叶斯方法](##朴素贝叶斯方法)
+- [决策树](##决策树)
+- [集成学习](##集成学习)
+  - [AdaBoost算法](###AdaBoost算法)
+  - [梯度提升算法_GBDT](###梯度提升算法_GBDT)
+  - [xgboost算法](###xgboost算法)
+  - [bagging算法](###bagging算法)
+  - [随机森林](###随机森林)
 
 ## 逻辑回归分类器
 1. 逻辑回归分类器是在线性回归的基础上构建，为了使得输入取值仅为0、1，因此采用了sigmoid函数映射
@@ -105,7 +113,7 @@ ps: 随机梯度下降与普通梯度下降的区别在于前者更新参数时�
    - boosting需解决两个问题：第一，每一轮如何改变数据的权值以及概率分布；    
                             第二，如何组合多个弱分类器
 4. bagging: 随机森林（减少方差）
-### AdaBoost算法（减少偏差）
+### AdaBoost算法
 1. 含义: 对样本赋予初始权重1/N，基于训练数据构建基分类器，根据分类器的错误率调整样本权重，
    然后继续构建分类器，直到达到指定T个，然后对T个分类器加权求和
 2. 针对boosting的两个问题：
@@ -131,11 +139,11 @@ ps: 随机梯度下降与普通梯度下降的区别在于前者更新参数时�
 <a href="http://www.codecogs.com/eqnedit.php?latex=G(x)=\mathrm{sign}(\sum_{m=1}^M\alpha_mG_m(x))" target="_blank"><img src="http://latex.codecogs.com/gif.latex?G(x)=\mathrm{sign}(\sum_{m=1}^M\alpha_mG_m(x))" title="G(x)=\mathrm{sign}(\sum_{m=1}^M\alpha_mG_m(x))" /></a>  
 **总结：AdaBoost不改变训练数据的分布，但通过改变训练数据的权值分布，使得训练数据在不同分类器中起到不同的作用
 
-### 梯度提升算法 GBDT （每棵树的深度较小）
+### 梯度提升算法_GBDT 
 1. 提升树：迭代生成多个模型，将每个模型的预测结果相加，后面模型基于前面模型的效果生成   
           在回归问题中，新的树是通过不断拟合残差得到    
 2. 梯度提升：当损失函数为平方损失或指数损失时，残差易得到，但一般的损失函数，不易得到残差时，则利用**损失函数的负梯度作为残差的近似值**
-3. GBDT：以CART回归树为基学习器的梯度提升算法
+3. GBDT：以CART回归树为基学习器的梯度提升算法, 每棵树的深度较小
 3. GBDT算法描述   
 输入：训练集 T={(x1,y1),..,(xN,yN)}, xi ∈ R^n, yi ∈ R；损失函数 L(y,f(x))；   
 输出：回归树 f_M(x)  
@@ -159,7 +167,7 @@ ps: 随机梯度下降与普通梯度下降的区别在于前者更新参数时�
    这同时也起到了“剪枝”的作用——如果分数小于γ，则不会增加分支；  
    <a href="http://www.codecogs.com/eqnedit.php?latex=Gain&space;=&space;\frac{1}{2}&space;\left[\frac{G_L^2}{H_L&plus;\lambda}&plus;\frac{G_R^2}{H_R&plus;\lambda}-\frac{(G_L&plus;G_R)^2}{H_L&plus;H_R&plus;\lambda}\right]&space;-&space;\gamma" target="_blank"><img src="http://latex.codecogs.com/gif.latex?Gain&space;=&space;\frac{1}{2}&space;\left[\frac{G_L^2}{H_L&plus;\lambda}&plus;\frac{G_R^2}{H_R&plus;\lambda}-\frac{(G_L&plus;G_R)^2}{H_L&plus;H_R&plus;\lambda}\right]&space;-&space;\gamma" title="Gain = \frac{1}{2} \left[\frac{G_L^2}{H_L+\lambda}+\frac{G_R^2}{H_R+\lambda}-\frac{(G_L+G_R)^2}{H_L+H_R+\lambda}\right] - \gamma" /></a>
 
-### bagging算法（减少方差）
+### bagging算法
 1. 提升集成学习的效果，就需使得个体学习器之间独立，而bagging通过对样本进行自助采样，
    使得基分类器的训练样本不同，让基分类器之间产生较大差异，从而提升预测效果
 2. 流程：采样出T个含有m个样本的训练集，然后基于每个训练集构建基分类器，最后将这些基学习器组合，
@@ -167,7 +175,7 @@ ps: 随机梯度下降与普通梯度下降的区别在于前者更新参数时�
 3. 优点：高效，与训练基学习器的复杂度同阶; 与AdaBoost只能用于二分类不同，bagging可以用于多分类或者回归；  
    由于自助采样，有部分样本并未进入任何一个训练集，因此可以作为验证集测试模型泛化性能
    
-### 随机森林（每棵树的深度要求较高）
-1. 在以决策树为基分类器构建bagging的基础上，每棵决策树随机选取部分特征（通过boostrap的方法随机选择k个特征子集）
+### 随机森林
+1. 在以决策树为基分类器构建bagging的基础上，每棵决策树随机选取部分特征（通过boostrap的方法随机选择k个特征子集），每棵树的深度要求较高
 2. 随机森林基学习器的多样性不仅来源于样本扰动，还来源于属性扰动，使得最终集成的泛化性能由于个体学习器之间的差异度增加而进一步提升
 3. 优点：训练效率优于bagging，因为只采用了部分特征，基分类器的性能较低，但随着分类器个数增加，随机森林往往会收敛到很低的泛化误差
