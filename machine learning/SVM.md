@@ -1,3 +1,7 @@
+---
+- [逻辑回归分类器](## 逻辑回归分类器)
+- [逻辑斯蒂回归](##逻辑回归分类器)
+
 ## 逻辑回归分类器
 1. 逻辑回归分类器是在线性回归的基础上构建，为了使得输入取值仅为0、1，因此采用了sigmoid函数映射
 2. 逻辑回归模型：ln y/(1-y) = w*x+b
@@ -18,9 +22,6 @@ ps: 随机梯度下降与普通梯度下降的区别在于前者更新参数时�
 - 多分类逻辑回归采用[softmax回归](https://tech.meituan.com/intro_to_logistic_regression.html)   
 - 也可采用构建多个分类器的方法，如one-vs-one、one-vs-all, 
   当类别之间互斥时，则需采用softmax回归
-   
-   
-   
    
 
 ## 支持向量机
@@ -100,17 +101,17 @@ ps: 随机梯度下降与普通梯度下降的区别在于前者更新参数时�
 - **集成学习的核心：个体学习器要有一定的准确率，同时分类器具有差异，即实现“好而不同”**
 2. 集成学习分两类：boosting:各分类器之间相互依赖，必须串行生成的序列方法;   
    bagging: 各分类器之间不存在强依赖关系，可以并行生成
-3. boosting: adaboost、GBDT、xgboost   
+3. boosting: adaboost、GBDT、xgboost   （减少偏差）
    - boosting需解决两个问题：第一，每一轮如何改变数据的权值以及概率分布；    
                             第二，如何组合多个弱分类器
-   
-### AdaBoost算法
+4. bagging: 随机森林（减少方差）
+### AdaBoost算法（减少偏差）
 1. 含义: 对样本赋予初始权重1/N，基于训练数据构建基分类器，根据分类器的错误率调整样本权重，
    然后继续构建分类器，直到达到指定T个，然后对T个分类器加权求和
 2. 针对boosting的两个问题：
 - 初始对每个样本赋予相同的权值，建立分类器后，提高上一轮分类错误的样本权值，降低分类正确的样本权值
 - 采用加法模型，加大分类错误率低的模型的权重，使其在表决中起更大的作用
-3. adaboost模型为加法模型，损失函数为指数损失，同时学习算法是前向分步算法    
+3. adaboost模型为加法模型，损失函数为指数损失，同时学习算法是前向分步算法的二分类学习方法       
    损失函数为指数函数L(y,f(x)) = exp(-y*f(x))    
    前向分步算法思想：从前向后，每一步只学习一个基函数及其系数，逐步优化目标函数   
 #### 算法描述
@@ -130,7 +131,7 @@ ps: 随机梯度下降与普通梯度下降的区别在于前者更新参数时�
 <a href="http://www.codecogs.com/eqnedit.php?latex=G(x)=\mathrm{sign}(\sum_{m=1}^M\alpha_mG_m(x))" target="_blank"><img src="http://latex.codecogs.com/gif.latex?G(x)=\mathrm{sign}(\sum_{m=1}^M\alpha_mG_m(x))" title="G(x)=\mathrm{sign}(\sum_{m=1}^M\alpha_mG_m(x))" /></a>  
 **总结：AdaBoost不改变训练数据的分布，但通过改变训练数据的权值分布，使得训练数据在不同分类器中起到不同的作用
 
-### 梯度提升算法 GBDT
+### 梯度提升算法 GBDT （每棵树的深度较小）
 1. 提升树：迭代生成多个模型，将每个模型的预测结果相加，后面模型基于前面模型的效果生成   
           在回归问题中，新的树是通过不断拟合残差得到    
 2. 梯度提升：当损失函数为平方损失或指数损失时，残差易得到，但一般的损失函数，不易得到残差时，则利用**损失函数的负梯度作为残差的近似值**
@@ -148,9 +149,25 @@ ps: 随机梯度下降与普通梯度下降的区别在于前者更新参数时�
 <a href="http://www.codecogs.com/eqnedit.php?latex=c_{m,j}={\color{Red}&space;\arg\underset{c}{\min}}\sum_{x_i\in&space;R_{m,j}}L(y_i,{\color{Blue}&space;f_{m-1}(x_i)&plus;c})" target="_blank"><img src="http://latex.codecogs.com/gif.latex?c_{m,j}={\color{Red}&space;\arg\underset{c}{\min}}\sum_{x_i\in&space;R_{m,j}}L(y_i,{\color{Blue}&space;f_{m-1}(x_i)&plus;c})" title="c_{m,j}={\color{Red} \arg\underset{c}{\min}}\sum_{x_i\in R_{m,j}}L(y_i,{\color{Blue} f_{m-1}(x_i)+c})" /></a>
 - 更新回归树   
 <a href="http://www.codecogs.com/eqnedit.php?latex=f_m(x)=f_{m-1}&plus;\sum_{j=1}^J&space;c_{m,j}{\color{Blue}&space;I(x\in&space;R_{m,j})}" target="_blank"><img src="http://latex.codecogs.com/gif.latex?f_m(x)=f_{m-1}&plus;\sum_{j=1}^J&space;c_{m,j}{\color{Blue}&space;I(x\in&space;R_{m,j})}" title="f_m(x)=f_{m-1}+\sum_{j=1}^J c_{m,j}{\color{Blue} I(x\in R_{m,j})}" /></a>   
-### xgboost
 
+### xgboost算法
+1. xgboost算法是GBDT的高效实现，基分类器除了CART回归树，还可以是线性分类器
+2. 损失函数添加了正则化项，包括 L2 权重衰减和对叶子数的限制
+3. 使用牛顿法代替梯度下降法寻找最优解，前者使用一阶+二阶导数作为残差，后者只使用了一阶导数
+4. 传统 CART树寻找最优切分点的标准是最小化均方差；
+   XGBoost 通过最大化得分公式来寻找最优切分点：  
+   这同时也起到了“剪枝”的作用——如果分数小于γ，则不会增加分支；  
+   <a href="http://www.codecogs.com/eqnedit.php?latex=Gain&space;=&space;\frac{1}{2}&space;\left[\frac{G_L^2}{H_L&plus;\lambda}&plus;\frac{G_R^2}{H_R&plus;\lambda}-\frac{(G_L&plus;G_R)^2}{H_L&plus;H_R&plus;\lambda}\right]&space;-&space;\gamma" target="_blank"><img src="http://latex.codecogs.com/gif.latex?Gain&space;=&space;\frac{1}{2}&space;\left[\frac{G_L^2}{H_L&plus;\lambda}&plus;\frac{G_R^2}{H_R&plus;\lambda}-\frac{(G_L&plus;G_R)^2}{H_L&plus;H_R&plus;\lambda}\right]&space;-&space;\gamma" title="Gain = \frac{1}{2} \left[\frac{G_L^2}{H_L+\lambda}+\frac{G_R^2}{H_R+\lambda}-\frac{(G_L+G_R)^2}{H_L+H_R+\lambda}\right] - \gamma" /></a>
 
-
-
-
+### bagging算法（减少方差）
+1. 提升集成学习的效果，就需使得个体学习器之间独立，而bagging通过对样本进行自助采样，
+   使得基分类器的训练样本不同，让基分类器之间产生较大差异，从而提升预测效果
+2. 流程：采样出T个含有m个样本的训练集，然后基于每个训练集构建基分类器，最后将这些基学习器组合，
+   通常对于分类，采用简单投票法，而对于回归，则采用简单平均法
+3. 优点：高效，与训练基学习器的复杂度同阶; 与AdaBoost只能用于二分类不同，bagging可以用于多分类或者回归；  
+   由于自助采样，有部分样本并未进入任何一个训练集，因此可以作为验证集测试模型泛化性能
+   
+### 随机森林（每棵树的深度要求较高）
+1. 在以决策树为基分类器构建bagging的基础上，每棵决策树随机选取部分特征（通过boostrap的方法随机选择k个特征子集）
+2. 随机森林基学习器的多样性不仅来源于样本扰动，还来源于属性扰动，使得最终集成的泛化性能由于个体学习器之间的差异度增加而进一步提升
+3. 优点：训练效率优于bagging，因为只采用了部分特征，基分类器的性能较低，但随着分类器个数增加，随机森林往往会收敛到很低的泛化误差
