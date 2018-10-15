@@ -93,5 +93,64 @@ ps: 随机梯度下降与普通梯度下降的区别在于前者更新参数时�
 - 使用基尼指数寻找划分特征以及最优划分点，基尼指数表示集合的不确定性，基尼指数越大，则数据的不纯度越高   
 <a href="http://www.codecogs.com/eqnedit.php?latex=Gini(p)&space;=&space;\sum_{k=1}^{K}P_k(1-P_k)&space;=1-&space;\sum_{k=1}^{K}P_k^{2}" target="_blank"><img src="http://latex.codecogs.com/gif.latex?Gini(p)&space;=&space;\sum_{k=1}^{K}P_k(1-P_k)&space;=1-&space;\sum_{k=1}^{K}P_k^{2}" title="Gini(p) = \sum_{k=1}^{K}P_k(1-P_k) =1- \sum_{k=1}^{K}P_k^{2}" /></a>
 
-## bagging与boosting
-1. bagging
+## 集成学习
+1. 集成学习是指构建并结合多个分类器来完成学习任务，其中多个分类器可以是同质分类器，此时被称为基分类器，比如决策树集成，神经网络集成，
+   集成也可包含不同分类器，如同时包含决策树和神经网络，称为组件学习器
+- 集成学习为什么有效？：平均上，集成学习至少能与多分类器中一个保持一致的分类效果，而当多个分类器的误差独立时，集成学习的效果比其成员效果更好
+- **集成学习的核心：个体学习器要有一定的准确率，同时分类器具有差异，即实现“好而不同”**
+2. 集成学习分两类：boosting:各分类器之间相互依赖，必须串行生成的序列方法;   
+   bagging: 各分类器之间不存在强依赖关系，可以并行生成
+3. boosting: adaboost、GBDT、xgboost   
+   - boosting需解决两个问题：第一，每一轮如何改变数据的权值以及概率分布；    
+                            第二，如何组合多个弱分类器
+   
+### AdaBoost算法
+1. 含义: 对样本赋予初始权重1/N，基于训练数据构建基分类器，根据分类器的错误率调整样本权重，
+   然后继续构建分类器，直到达到指定T个，然后对T个分类器加权求和
+2. 针对boosting的两个问题：
+- 初始对每个样本赋予相同的权值，建立分类器后，提高上一轮分类错误的样本权值，降低分类正确的样本权值
+- 采用加法模型，加大分类错误率低的模型的权重，使其在表决中起更大的作用
+3. adaboost模型为加法模型，损失函数为指数损失，同时学习算法是前向分步算法    
+   损失函数为指数函数L(y,f(x)) = exp(-y*f(x))    
+   前向分步算法思想：从前向后，每一步只学习一个基函数及其系数，逐步优化目标函数   
+#### 算法描述
+- 输入：训练集 T={(x1,y1),..,(xN,yN)}, xi ∈ R^n, yi ∈ {-1,+1}，基学习器 G1(x)
+- 输出：最终学习器 G(x)
+1. 初始化样本权值   
+<a href="http://www.codecogs.com/eqnedit.php?latex=D_1=(w_{1,1},\cdots,w_{1,i},\cdots,w_{1,N}),\quad&space;w_{1,i}=\frac{1}{N},\quad&space;i=1,2,\cdots,N" target="_blank"><img src="http://latex.codecogs.com/gif.latex?D_1=(w_{1,1},\cdots,w_{1,i},\cdots,w_{1,N}),\quad&space;w_{1,i}=\frac{1}{N},\quad&space;i=1,2,\cdots,N" title="D_1=(w_{1,1},\cdots,w_{1,i},\cdots,w_{1,N}),\quad w_{1,i}=\frac{1}{N},\quad i=1,2,\cdots,N" /></a>
+2. 构建基分类器   
+<a href="http://www.codecogs.com/eqnedit.php?latex=G_m(x):\chi&space;\rightarrow&space;{-1,&plus;1}" target="_blank"><img src="http://latex.codecogs.com/gif.latex?G_m(x):\chi&space;\rightarrow&space;{-1,&plus;1}" title="G_m(x):\chi \rightarrow {-1,+1}" /></a>
+3. 计算基分类器的分类错误率，即为分类错误样本的权值之和   
+<a href="http://www.codecogs.com/eqnedit.php?latex=\begin{aligned}&space;e_m&=P(G_m(x_i)\neq&space;y_i)\\&=\sum_{i=1}^Nw_{m,i}\cdot&space;{\color{Red}&space;I(G_m(x_i)\neq&space;y_i)}&space;\end{aligned}" target="_blank"><img src="http://latex.codecogs.com/gif.latex?\begin{aligned}&space;e_m&=P(G_m(x_i)\neq&space;y_i)\\&=\sum_{i=1}^Nw_{m,i}\cdot&space;{\color{Red}&space;I(G_m(x_i)\neq&space;y_i)}&space;\end{aligned}" title="\begin{aligned} e_m&=P(G_m(x_i)\neq y_i)\\&=\sum_{i=1}^Nw_{m,i}\cdot {\color{Red} I(G_m(x_i)\neq y_i)} \end{aligned}" /></a>
+4. 计算分类器的权重   
+<a href="http://www.codecogs.com/eqnedit.php?latex=\alpha_m=\frac{1}{2}\ln\frac{1-e_m}{e_m}" target="_blank"><img src="http://latex.codecogs.com/gif.latex?\alpha_m=\frac{1}{2}\ln\frac{1-e_m}{e_m}" title="\alpha_m=\frac{1}{2}\ln\frac{1-e_m}{e_m}" /></a>
+5. 更新样本的权值，分类错误与分类正确的样本权值相差exp(2a)  
+<a href="http://www.codecogs.com/eqnedit.php?latex=\begin{aligned}&space;D_{{\color{Red}m&plus;1}}&=(w_{m&plus;1,1},\cdots,w_{m&plus;1,i},\cdots,w_{m&plus;1,N})\\w_{{\color{Red}m&plus;1},i}&=\frac{w_{{\color{Red}m},i}\cdot\exp(-\alpha_{\color{Red}m}\cdot{\color{Blue}y_iG_m(x_i)&space;})}{Z_{\color{Red}m}}&space;\end{aligned}" target="_blank"><img src="http://latex.codecogs.com/gif.latex?\begin{aligned}&space;D_{{\color{Red}m&plus;1}}&=(w_{m&plus;1,1},\cdots,w_{m&plus;1,i},\cdots,w_{m&plus;1,N})\\w_{{\color{Red}m&plus;1},i}&=\frac{w_{{\color{Red}m},i}\cdot\exp(-\alpha_{\color{Red}m}\cdot{\color{Blue}y_iG_m(x_i)&space;})}{Z_{\color{Red}m}}&space;\end{aligned}" title="\begin{aligned} D_{{\color{Red}m+1}}&=(w_{m+1,1},\cdots,w_{m+1,i},\cdots,w_{m+1,N})\\w_{{\color{Red}m+1},i}&=\frac{w_{{\color{Red}m},i}\cdot\exp(-\alpha_{\color{Red}m}\cdot{\color{Blue}y_iG_m(x_i) })}{Z_{\color{Red}m}} \end{aligned}" /></a>
+6. 重复构建m个分类器，最终线性组合，得到最终集成分类器   
+<a href="http://www.codecogs.com/eqnedit.php?latex=G(x)=\mathrm{sign}(\sum_{m=1}^M\alpha_mG_m(x))" target="_blank"><img src="http://latex.codecogs.com/gif.latex?G(x)=\mathrm{sign}(\sum_{m=1}^M\alpha_mG_m(x))" title="G(x)=\mathrm{sign}(\sum_{m=1}^M\alpha_mG_m(x))" /></a>  
+**总结：AdaBoost不改变训练数据的分布，但通过改变训练数据的权值分布，使得训练数据在不同分类器中起到不同的作用
+
+### 梯度提升算法 GBDT
+1. 提升树：迭代生成多个模型，将每个模型的预测结果相加，后面模型基于前面模型的效果生成   
+          在回归问题中，新的树是通过不断拟合残差得到    
+2. 梯度提升：当损失函数为平方损失或指数损失时，残差易得到，但一般的损失函数，不易得到残差时，则利用**损失函数的负梯度作为残差的近似值**
+3. GBDT：以CART回归树为基学习器的梯度提升算法
+3. GBDT算法描述   
+输入：训练集 T={(x1,y1),..,(xN,yN)}, xi ∈ R^n, yi ∈ R；损失函数 L(y,f(x))；   
+输出：回归树 f_M(x)  
+- 初始化回归树
+<a href="http://www.codecogs.com/eqnedit.php?latex=f_0(x)={\color{Red}&space;\arg\underset{c}{\min}}\sum_{i=1}^NL(y_i,c)" target="_blank"><img src="http://latex.codecogs.com/gif.latex?f_0(x)={\color{Red}&space;\arg\underset{c}{\min}}\sum_{i=1}^NL(y_i,c)" title="f_0(x)={\color{Red} \arg\underset{c}{\min}}\sum_{i=1}^NL(y_i,c)" /></a>   
+- 对于每一轮，计算残差/负梯度   
+<a href="http://www.codecogs.com/eqnedit.php?latex=r_{m,i}=-\frac{\partial&space;L(y_i,{\color{Red}&space;f_{m-1}(x_i)}))}{\partial&space;{\color{Red}&space;f_{m-1}(x_i)}}" target="_blank"><img src="http://latex.codecogs.com/gif.latex?r_{m,i}=-\frac{\partial&space;L(y_i,{\color{Red}&space;f_{m-1}(x_i)}))}{\partial&space;{\color{Red}&space;f_{m-1}(x_i)}}" title="r_{m,i}=-\frac{\partial L(y_i,{\color{Red} f_{m-1}(x_i)}))}{\partial {\color{Red} f_{m-1}(x_i)}}" /></a>
+- 对负梯度拟合一个回归树，得到第m棵树的叶结点区域   
+<a href="http://www.codecogs.com/eqnedit.php?latex=R_{m,j},\quad&space;j=1,2,..,J" target="_blank"><img src="http://latex.codecogs.com/gif.latex?R_{m,j},\quad&space;j=1,2,..,J" title="R_{m,j},\quad j=1,2,..,J" /></a>
+- 估计每个叶结点区域的值   
+<a href="http://www.codecogs.com/eqnedit.php?latex=c_{m,j}={\color{Red}&space;\arg\underset{c}{\min}}\sum_{x_i\in&space;R_{m,j}}L(y_i,{\color{Blue}&space;f_{m-1}(x_i)&plus;c})" target="_blank"><img src="http://latex.codecogs.com/gif.latex?c_{m,j}={\color{Red}&space;\arg\underset{c}{\min}}\sum_{x_i\in&space;R_{m,j}}L(y_i,{\color{Blue}&space;f_{m-1}(x_i)&plus;c})" title="c_{m,j}={\color{Red} \arg\underset{c}{\min}}\sum_{x_i\in R_{m,j}}L(y_i,{\color{Blue} f_{m-1}(x_i)+c})" /></a>
+- 更新回归树   
+<a href="http://www.codecogs.com/eqnedit.php?latex=f_m(x)=f_{m-1}&plus;\sum_{j=1}^J&space;c_{m,j}{\color{Blue}&space;I(x\in&space;R_{m,j})}" target="_blank"><img src="http://latex.codecogs.com/gif.latex?f_m(x)=f_{m-1}&plus;\sum_{j=1}^J&space;c_{m,j}{\color{Blue}&space;I(x\in&space;R_{m,j})}" title="f_m(x)=f_{m-1}+\sum_{j=1}^J c_{m,j}{\color{Blue} I(x\in R_{m,j})}" /></a>   
+### xgboost
+
+
+
+
+
