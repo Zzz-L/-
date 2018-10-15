@@ -93,3 +93,5 @@ ps: 随机梯度下降与普通梯度下降的区别在于前者更新参数时�
 - 使用基尼指数寻找划分特征以及最优划分点，基尼指数表示集合的不确定性，基尼指数越大，则数据的不纯度越高   
 <a href="http://www.codecogs.com/eqnedit.php?latex=Gini(p)&space;=&space;\sum_{k=1}^{K}P_k(1-P_k)&space;=1-&space;\sum_{k=1}^{K}P_k^{2}" target="_blank"><img src="http://latex.codecogs.com/gif.latex?Gini(p)&space;=&space;\sum_{k=1}^{K}P_k(1-P_k)&space;=1-&space;\sum_{k=1}^{K}P_k^{2}" title="Gini(p) = \sum_{k=1}^{K}P_k(1-P_k) =1- \sum_{k=1}^{K}P_k^{2}" /></a>
 
+## bagging与boosting
+1. bagging
