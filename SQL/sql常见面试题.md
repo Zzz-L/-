@@ -11,4 +11,31 @@
 - full join: 返回两张表所有行
 5. 通配符：like "%" 匹配任意字符任意次数（包含0次），‘_’ 匹配单个字符
 6. having和where的区别：having 在group by对分组后的数据筛选，而where在分组之前过滤数据
-7.窗口函数 除了用于排序还有其他的
+7. 窗口函数 
+- 窗口函数的语法: <窗口函数> over ([partition by 列清单] order by <排序用列清单>)
+- sum,avg,count,max,min,rank,dense_rank,row_number等聚合函数都可用于窗口函数
+- row_number,rank,dense_rank的区别: row_number排序时不会生成相同名次，即没有重复值的排序，
+　而rank,dense_rank对于取值相同的样本会赋予同一名次，但rank会跳过之后的名次，而dense_rank不会跳过
+```
+select
+user_id,user_type,sales,
+RANK() over (partition by user_type order by sales desc) as r,
+ROW_NUMBER() over (partition by user_type order by sales desc) as rn,
+DENSE_RANK() over (partition by user_type order by sales desc) as dr
+from
+orders;
+```
+上述查询结果如下
+
+| user_id | user_type | sales |  r  | rn  | dr  |
+| ------- | --------- | ----- | --- | --- | --- |
+| tom1    | new       | 6     | 1   | 1   | 1   |
+| tom3    | new       | 5     | 2   | 2   | 2   |
+| tom2    | new       | 5     | 2   | 3   | 2   |
+| wanger  | new       | 3     | 4   | 4   | 3   |
+| zhangsa | new       | 2     | 5   | 5   | 4   |
+| tom     | new       | 1     | 6   | 6   | 5   |
+| liliu   | new       | 1     | 6   | 7   | 5   |
+| tomson  | old       | 3     | 1   | 1   | 1   |
+| tomas   | old       | 2     | 2   | 2   | 2   |
+| lisi    | old       | 1     | 3   | 3   | 3   |
