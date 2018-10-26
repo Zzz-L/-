@@ -39,3 +39,6 @@ orders;
 | tomson  | old       | 3     | 1   | 1   | 1   |
 | tomas   | old       | 2     | 2   | 2   | 2   |
 | lisi    | old       | 1     | 3   | 3   | 3   |
+
+参考[Hive分析函数和窗口函数](https://www.jianshu.com/p/acc8b158daef)   
+[窗口函数](https://www.jianshu.com/p/679fd81f8d27)
