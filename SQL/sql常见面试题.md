@@ -41,3 +41,26 @@ orders;
 | lisi    | old       | 1     | 3   | 3   | 3   |
 
 参考[Hive分析函数和窗口函数](https://www.jianshu.com/p/acc8b158daef)、[窗口函数](https://www.jianshu.com/p/679fd81f8d27)
+
+8. sql语句中根据原始数据生成新字段，例：
+```
+一张表数据如下
+ 1900-1-1 胜
+ 1900-1-1 胜
+ 1900-1-1 负
+ 1900-1-2 胜
+ 1900-1-2 胜
+ 写出一条SQL语句，使检索结果如下:
+          胜  负
+ 1900-1-1 2   1
+ 1900-1-2 2   0 
+ ```
+ 采用case when 求解：
+ ```
+select distinct Date,
+sum(case Result when '胜' then 1 else 0 end) as '胜',
+sum(case Result when '负' then 1 else 0 end) as '负'
+from test
+group by date
+ 
+ ```
